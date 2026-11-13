@@ -108,7 +108,7 @@ function rendu(){
   const g={};f.forEach(i=>(g[i.rubrique]=g[i.rubrique]||[]).push(i));
   $('#liste').innerHTML=Object.entries(g).map(([r,l])=>`<details ${q||Object.keys(g).length<3?'open':''}><summary>${esc(r)} <small>(${l.length})</small></summary><ul class="res">`+
    l.map(i=>`<li>${i.code?`<span class="code">${esc(i.code)}</span>`:''}<span class="niv ${i.niveau}">${i.niveau}</span><span class="t">${esc(i.titre)}${i.type?' · <small>'+esc(i.type)+'</small>':''}</span>`+
-   (i.plan||i.pf?`<a class="btn" href="#plan/${i.code}">🎮 Je m'entraîne</a>`:'')+(i.f?`<a class="btn" href="#" data-f="${i.f}">${i.ecoute?'🎧 Écouter':'📄 '+(i.plan||i.pf?'Imprimer':'Ouvrir')}</a>`:i.lien?`<a class="btn" href="${i.lien}">🎧 Écouter</a>`:`<a class="btn" href="${encodeURI(i.pdf)}" target="_blank" rel="noopener">📄 Ouvrir</a>`)+'</li>').join('')+'</ul></details>').join('')};
+   (i.plan||i.pf?`<a class="btn" href="#plan/${i.code}">🎮 Je m'entraîne</a>`:'')+(i.f?`<a class="btn" href="#" data-f="${i.f}">${i.ecoute?'🎧 Écouter':'📄 '+(i.plan||i.pf?'Imprimer':'Ouvrir')}</a>`:i.lien?`<a class="btn" href="${i.lien}">🎧 Écouter</a>`:i.pdf?`<a class="btn" href="${encodeURI(i.pdf)}" target="_blank" rel="noopener">📄 Ouvrir</a>`:'')+'</li>').join('')+'</ul></details>').join('')};
  $('#q').oninput=liste;liste();}
 /* ===== Je m'entraîne : calcul mental qui se corrige seul ===== */
 const r=(a,b)=>Math.floor(Math.random()*(b-a+1))+a;
