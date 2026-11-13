@@ -1,0 +1,134 @@
+<!doctype html><html lang="fr"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Le coin des élèves</title><meta name="robots" content="noindex,nofollow">
+<style>
+:root{--fond:#FFF8EE;--texte:#2b2b2b;--doux:#666;--carte:#fff;--bord:#eadfcd;--entete:#264653}
+*{box-sizing:border-box}
+body{margin:0;font-family:"Century Gothic",Arial,Helvetica,sans-serif;background:var(--fond);color:var(--texte)}
+header{background:var(--entete);color:#fff;padding:16px 16px 12px;text-align:center}
+header h1{margin:0;font-size:28px;cursor:pointer}header p{margin:4px 0 0;opacity:.9}
+.niveaux{display:flex;gap:8px;justify-content:center;margin-top:12px;flex-wrap:wrap}
+.niveaux button{font:inherit;font-weight:bold;border:2px solid #fff;background:transparent;color:#fff;border-radius:20px;padding:6px 16px;cursor:pointer}
+.niveaux button.on{background:#fff;color:var(--entete)}
+nav{display:flex;flex-wrap:wrap;gap:8px;justify-content:center;padding:10px 12px;background:#fff;border-bottom:2px solid var(--bord);position:sticky;top:0;z-index:5}
+nav a{text-decoration:none;color:#fff;padding:8px 13px;border-radius:20px;font-weight:bold;font-size:15px;background:var(--c);opacity:.75}
+nav a.on{opacity:1;box-shadow:0 0 0 3px #fff,0 0 0 5px var(--c)}
+main{max-width:960px;margin:auto;padding:16px}
+.accueil{display:grid;grid-template-columns:repeat(auto-fit,minmax(200px,1fr));gap:14px}
+.grosse{display:block;text-decoration:none;color:var(--texte);background:#fff;border-radius:18px;padding:18px;border-top:8px solid var(--c)}
+.grosse span{font-size:38px}.grosse b{display:block;font-size:20px;margin:6px 0 2px;color:var(--c)}.grosse small{color:var(--doux)}
+h2.titre{color:var(--c);margin:6px 0 12px}
+input.cherche{width:100%;font:inherit;font-size:17px;padding:10px 14px;border:2px solid var(--bord);border-radius:14px;margin-bottom:12px}
+details{background:#fff;border-radius:14px;margin:10px 0;border-left:7px solid var(--c)}
+summary{cursor:pointer;padding:12px 14px;font-weight:bold;font-size:17px}
+summary small{font-weight:normal;color:var(--doux)}
+ul.res{list-style:none;margin:0;padding:0 12px 12px}
+ul.res li{display:flex;align-items:center;gap:10px;padding:8px 6px;border-top:1px solid #f1ebe1;flex-wrap:wrap}
+.code{font-size:12px;font-weight:bold;background:#f4efe6;border-radius:6px;padding:2px 6px;color:#555}
+.niv{font-size:12px;border-radius:6px;padding:2px 6px;color:#fff;background:#888}.niv.CM1{background:#3D7DC8}.niv.CM2{background:#E07A4F}
+li .t{flex:1;min-width:160px}
+a.btn{text-decoration:none;font-size:14px;font-weight:bold;color:#fff;background:var(--c);border-radius:10px;padding:7px 12px;white-space:nowrap}
+.vide{color:var(--doux);font-style:italic;padding:10px}
+/* entraînement */
+.ent{background:#fff;border-radius:18px;padding:18px;border-top:8px solid var(--c)}
+.choix{display:flex;flex-wrap:wrap;gap:8px;margin:8px 0 14px}
+.choix button,.ent .go{font:inherit;border:2px solid var(--c);background:#fff;color:var(--c);border-radius:12px;padding:8px 12px;cursor:pointer;font-weight:bold}
+.choix button.on,.ent .go{background:var(--c);color:#fff}
+.q{font-size:34px;font-weight:bold;margin:12px 0}
+.ent input{font:inherit;font-size:26px;width:140px;padding:6px;border:3px solid #ccc;border-radius:10px;text-align:center}
+.ok{color:#2E9A4B;font-weight:bold}.ko{color:#C0392B;font-weight:bold}
+.barre{height:12px;background:#eee;border-radius:6px;overflow:hidden;margin-top:10px}.barre div{height:100%;background:var(--c);width:0;transition:width .3s}
+footer{text-align:center;color:var(--doux);font-size:13px;padding:24px 16px}
+</style></head><body>
+<header><h1 onclick="location.hash=''">🏫 Le coin des élèves</h1><p>Mes plans de travail, mes ateliers, mes écoutes et mes entraînements</p>
+<div class="niveaux" id="niveaux"><button data-n="tous">Toute la classe</button><button data-n="CM1">Je suis en CM1</button><button data-n="CM2">Je suis en CM2</button></div></header>
+<nav id="nav"></nav>
+<main id="main"></main>
+<footer>Site de la classe · sans publicité · aucune donnée collectée · rien n'est enregistré</footer>
+<script src="catalogue.js"></script>
+<div id="porte" style="display:none;position:fixed;inset:0;background:var(--fond);z-index:20;align-items:center;justify-content:center;padding:16px">
+<form id="fporte" style="background:#fff;border-radius:20px;padding:26px;max-width:380px;width:100%;text-align:center;border-top:8px solid #264653">
+<div style="font-size:46px">🔒</div><h2 style="margin:6px 0">Le coin des élèves</h2><p style="color:#666">Tape le mot de passe donné par la maîtresse.</p>
+<input id="mdp" type="password" autocomplete="current-password" style="font:inherit;font-size:20px;width:100%;padding:10px;border:2px solid #ccc;border-radius:12px;text-align:center">
+<button style="font:inherit;font-weight:bold;font-size:18px;margin-top:12px;width:100%;padding:10px;border:0;border-radius:12px;background:#264653;color:#fff;cursor:pointer">Entrer</button>
+<p id="errporte" style="color:#C0392B;min-height:1.2em"></p></form></div>
+<script>
+const MATIERES=[
+ {id:'francais',nom:'Français',ic:'📖',c:'#2A9D8F',txt:'Plans de travail, dictées, rituel d\'écriture'},
+ {id:'maths',nom:'Maths',ic:'📐',c:'#3D7DC8',txt:'Plans de travail par notion'},
+ {id:'calcul',nom:'Calcul mental',ic:'🧮',c:'#E07A4F',txt:'Diaporamas d\'entraînement'},
+ {id:'entrainer',nom:'Je m\'entraîne',ic:'🎯',c:'#D19A12',txt:'Exercices qui se corrigent tout seuls'},
+ {id:'anglais',nom:'Anglais',ic:'🎧',c:'#7E57C2',txt:'Écoutes, lire et écrire, jeux'},
+ {id:'histoire',nom:'Histoire',ic:'🏰',c:'#FF3399',txt:'Bientôt'},
+ {id:'geographie',nom:'Géographie',ic:'🌍',c:'#2E9A4B',txt:'Bientôt'}];
+let niveau='tous';try{niveau=localStorage.getItem('niveau')||'tous'}catch(e){}
+const $=s=>document.querySelector(s);
+function esc(s){return String(s).replace(/[&<>"]/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[c]))}
+function garde(it){return niveau==='tous'||it.niveau===niveau||it.niveau==='CM1-CM2'}
+document.querySelectorAll('#niveaux button').forEach(b=>b.onclick=()=>{niveau=b.dataset.n;try{localStorage.setItem('niveau',niveau)}catch(e){};rendu()});
+function rendu(){
+ document.querySelectorAll('#niveaux button').forEach(b=>b.classList.toggle('on',b.dataset.n===niveau));
+ const id=location.hash.slice(1);
+ $('#nav').innerHTML=MATIERES.map(m=>`<a href="#${m.id}" style="--c:${m.c}" class="${m.id===id?'on':''}">${m.ic} ${m.nom}</a>`).join('');
+ const m=MATIERES.find(x=>x.id===id);
+ if(!m){ $('#main').innerHTML='<div class="accueil">'+MATIERES.map(m=>{const n=CATALOGUE.filter(i=>i.matiere===m.id&&garde(i)).length;
+   return `<a class="grosse" href="#${m.id}" style="--c:${m.c}"><span>${m.ic}</span><b>${m.nom}</b><small>${m.id==='entrainer'?m.txt:(n?n+' ressources · '+m.txt:m.txt)}</small></a>`}).join('')+'</div>'; return;}
+ if(m.id==='entrainer'){entrainement(m);return}
+ const items=CATALOGUE.filter(i=>i.matiere===m.id&&garde(i));
+ $('#main').innerHTML=`<div style="--c:${m.c}"><h2 class="titre">${m.ic} ${m.nom}</h2>
+  <input class="cherche" id="q" placeholder="🔎 Chercher une notion, un code (GRAM03, dictée 12…)"><div id="liste"></div></div>`;
+ const liste=()=>{const q=$('#q').value.toLowerCase().normalize('NFD').replace(/[̀-ͯ]/g,'');
+  const f=items.filter(i=>!q||(i.titre+' '+i.code+' '+i.rubrique+' '+i.type).toLowerCase().normalize('NFD').replace(/[̀-ͯ]/g,'').includes(q));
+  if(!f.length){$('#liste').innerHTML='<p class="vide">'+(items.length?'Rien trouvé.':'Les ressources arrivent bientôt.')+'</p>';return}
+  const g={};f.forEach(i=>(g[i.rubrique]=g[i.rubrique]||[]).push(i));
+  $('#liste').innerHTML=Object.entries(g).map(([r,l])=>`<details ${q||Object.keys(g).length<3?'open':''}><summary>${esc(r)} <small>(${l.length})</small></summary><ul class="res">`+
+   l.map(i=>`<li>${i.code?`<span class="code">${esc(i.code)}</span>`:''}<span class="niv ${i.niveau}">${i.niveau}</span><span class="t">${esc(i.titre)}${i.type?' · <small>'+esc(i.type)+'</small>':''}</span>`+
+   (i.f?`<a class="btn" href="#" data-f="${i.f}">${i.ecoute?'🎧 Écouter':'📄 Ouvrir'}</a>`:i.lien?`<a class="btn" href="${i.lien}">🎧 Écouter</a>`:`<a class="btn" href="${encodeURI(i.pdf)}" target="_blank" rel="noopener">📄 Ouvrir</a>`)+'</li>').join('')+'</ul></details>').join('')};
+ $('#q').oninput=liste;liste();}
+/* ===== Je m'entraîne : calcul mental qui se corrige seul ===== */
+const r=(a,b)=>Math.floor(Math.random()*(b-a+1))+a;
+const EXOS=[
+ {nom:'Ajouter 5',g:()=>{const a=r(5,95);return[a+' + 5',a+5]}},
+ {nom:'Complément à 100',g:()=>{const a=r(1,99);return[a+' + … = 100',100-a]}},
+ {nom:'Doubles',g:()=>{const a=r(6,50);return['Double de '+a,2*a]}},
+ {nom:'Moitiés',g:()=>{const a=2*r(5,50);return['Moitié de '+a,a/2]}},
+ {nom:'Ajouter 9 ou 19',g:()=>{const a=r(10,80),b=[9,19][r(0,1)];return[a+' + '+b,a+b]}},
+ {nom:'Tables de multiplication',g:()=>{const a=r(2,9),b=r(2,10);return[a+' × '+b,a*b]}},
+ {nom:'× 10, 100, 1 000',g:()=>{const a=r(2,99),b=[10,100,1000][r(0,2)];return[a+' × '+b.toLocaleString('fr-FR'),a*b]}},
+ {nom:'Nombres décimaux + 0,1',g:()=>{const a=r(10,99)/10;return[a.toLocaleString('fr-FR')+' + 0,1',Math.round(a*10+1)/10]}}];
+let ex=0,n=0,bon=0,rep=null;const TOTAL=10;
+function entrainement(m){
+ $('#main').innerHTML=`<div class="ent" style="--c:${m.c}"><h2 class="titre">${m.ic} ${m.nom}</h2><p>Choisis ton entraînement : 10 calculs, la correction est immédiate.</p>
+ <div class="choix">${EXOS.map((e,i)=>`<button data-i="${i}">${e.nom}</button>`).join('')}</div>
+ <div class="q" id="calc"></div><input id="rep" inputmode="decimal" autocomplete="off"> <button class="go" id="val">Valider</button>
+ <p id="retour"></p><div class="barre"><div id="prog"></div></div><p id="score"></p></div>`;
+ document.querySelectorAll('.choix button').forEach(b=>b.onclick=()=>{ex=+b.dataset.i;depart()});
+ $('#val').onclick=verif;$('#rep').onkeydown=e=>{if(e.key==='Enter')verif()};depart();}
+function depart(){n=0;bon=0;document.querySelectorAll('.choix button').forEach(b=>b.classList.toggle('on',+b.dataset.i===ex));$('#retour').textContent='';$('#score').textContent='';suivant()}
+function suivant(){$('#prog').style.width=(n*100/TOTAL)+'%';if(n>=TOTAL){$('#calc').textContent=bon>=8?'Bravo ! 🎉':'Continue, tu progresses ! 💪';$('#score').textContent='Score : '+bon+' / '+TOTAL;return}
+ const[q,s]=EXOS[ex].g();rep=s;$('#calc').textContent=q+' = ?';$('#rep').value='';$('#rep').focus()}
+function verif(){if(n>=TOTAL)return;const v=parseFloat($('#rep').value.replace(',','.').replace(/\s/g,''));if(isNaN(v))return;
+ if(Math.abs(v-rep)<1e-9){bon++;$('#retour').innerHTML='<span class="ok">✔ Juste !</span>'}else{$('#retour').innerHTML='<span class="ko">✘ C\'était '+rep.toLocaleString('fr-FR')+'</span>'}
+ n++;$('#score').textContent='Calcul '+n+' / '+TOTAL+' · '+bon+' juste(s)';suivant()}
+/* ===== Accès protégé : le catalogue et les fichiers sont chiffrés (AES-GCM, clé tirée du mot de passe) ===== */
+let CLE=null;
+const b64=a=>btoa(String.fromCharCode(...new Uint8Array(a))),d64=s=>Uint8Array.from(atob(s),c=>c.charCodeAt(0));
+async function dechiffre(url){const b=new Uint8Array(await (await fetch(url)).arrayBuffer());
+ return crypto.subtle.decrypt({name:'AES-GCM',iv:b.slice(0,12)},CLE,b.slice(12))}
+async function cleDepuis(mdp){const p=await (await fetch('data/cle.json')).json();
+ const base=await crypto.subtle.importKey('raw',new TextEncoder().encode(mdp.trim().toLowerCase()),'PBKDF2',false,['deriveKey']);
+ return crypto.subtle.deriveKey({name:'PBKDF2',salt:d64(p.sel),iterations:p.iter,hash:'SHA-256'},base,{name:'AES-GCM',length:256},true,['decrypt'])}
+async function ouvrirCatalogue(){window.CATALOGUE=JSON.parse(new TextDecoder().decode(await dechiffre('data/catalogue.bin')))}
+async function ouvrir(i){const w=window.open('','_blank');if(w)w.document.write('<p style="font-family:Arial;padding:20px">Ouverture…</p>');
+ try{const blob=new Blob([await dechiffre('f/'+i.f+'.bin')],{type:i.mime});const u=URL.createObjectURL(blob);if(w)w.location=u;else location=u}catch(e){if(w)w.close();alert('Impossible d\'ouvrir ce fichier.')}}
+document.addEventListener('click',e=>{const a=e.target.closest('a[data-f]');if(!a)return;e.preventDefault();ouvrir(CATALOGUE.find(x=>x.f===a.dataset.f))});
+async function demarrer(){window.onhashchange=rendu;
+ if(typeof CATALOGUE!=='undefined'){rendu();return}
+ try{const k=localStorage.getItem('cle');if(k){CLE=await crypto.subtle.importKey('raw',d64(k),'AES-GCM',true,['decrypt']);await ouvrirCatalogue();rendu();return}}catch(e){}
+ if(location.protocol==='file:'){$('#porte').style.display='flex';$('#fporte').innerHTML='<div style="font-size:46px">📦</div><h2>Dossier à décompresser</h2><p style="color:#666">Tu as ouvert le site depuis le fichier zip. Fais un clic droit sur le zip, choisis « Extraire tout », puis ouvre <b>index.html</b> dans le nouveau dossier.</p>';return}
+ $('#porte').style.display='flex';$('#mdp').focus();
+ $('#fporte').onsubmit=async e=>{e.preventDefault();$('#errporte').textContent='Vérification…';
+  try{CLE=await cleDepuis($('#mdp').value);await ouvrirCatalogue();
+   try{localStorage.setItem('cle',b64(await crypto.subtle.exportKey('raw',CLE)))}catch(e){}
+   $('#porte').style.display='none';rendu()}catch(err){$('#errporte').textContent='Ce n\'est pas le bon mot de passe.'}}}
+demarrer();
+</script></body></html>
