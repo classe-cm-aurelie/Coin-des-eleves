@@ -37,6 +37,31 @@ a.btn{text-decoration:none;font-size:14px;font-weight:bold;color:#fff;background
 .ent input{font:inherit;font-size:26px;width:140px;padding:6px;border:3px solid #ccc;border-radius:10px;text-align:center}
 .ok{color:#2E9A4B;font-weight:bold}.ko{color:#C0392B;font-weight:bold}
 .barre{height:12px;background:#eee;border-radius:6px;overflow:hidden;margin-top:10px}.barre div{height:100%;background:var(--c);width:0;transition:width .3s}
+/*PLANCSS*/
+/* plan interactif */
+.retour{display:inline-block;margin-bottom:10px;color:var(--c);font-weight:bold;text-decoration:none}
+.bloc{background:#fff;border-radius:16px;padding:16px;margin:14px 0;border-left:8px solid var(--c)}
+.bloc h3{margin:0 0 8px;color:var(--c)}
+.lecon p{margin:6px 0;line-height:1.5}
+.niv-t{margin:20px 0 6px;font-size:18px;color:var(--c)}
+.atel{display:flex;align-items:center;gap:12px;background:#fff;border:3px solid var(--c);border-radius:14px;padding:10px 14px;margin:8px 0;cursor:pointer;width:100%;font:inherit;text-align:left}
+.atel .num{background:var(--c);color:#fff;border-radius:8px;padding:3px 8px;font-weight:bold}
+.atel .tt{flex:1;font-weight:bold}.atel small{color:var(--doux);display:block;font-weight:normal}
+.atel .fait{font-size:20px}
+.jeu{background:#fff;border-radius:18px;padding:18px;border-top:8px solid var(--c);margin-top:14px}
+.carte{font-size:24px;margin:14px 0;line-height:1.4;font-weight:bold}
+.rep{display:flex;flex-wrap:wrap;gap:10px;margin:10px 0}
+.rep button,.btn2{font:inherit;font-size:18px;border:3px solid var(--c);background:#fff;color:var(--texte);border-radius:12px;padding:10px 16px;cursor:pointer}
+.rep button.bon{background:#d9f2df;border-color:#2E9A4B}.rep button.mauvais{background:#fadbd8;border-color:#C0392B}
+.btn2.plein{background:var(--c);color:#fff}
+.saisie{font:inherit;font-size:20px;width:100%;padding:10px;border:3px solid #ccc;border-radius:10px}
+.retourj{margin:10px 0;padding:10px 12px;border-radius:12px}
+.retourj.ok{background:#d9f2df}.retourj.ko{background:#fdecea}.retourj.compare{background:#fff3cd}
+.grille{display:grid;grid-template-columns:repeat(4,1fr);gap:8px}
+.mem{aspect-ratio:1/0.8;border:3px solid var(--c);border-radius:12px;background:var(--c);color:var(--c);font:inherit;font-size:15px;font-weight:bold;cursor:pointer;padding:4px;display:flex;align-items:center;justify-content:center;text-align:center}
+.mem.vue{background:#fff;color:var(--texte)}.mem.trouvee{background:#d9f2df;color:var(--texte);border-color:#2E9A4B;cursor:default}
+@media(max-width:600px){.grille{grid-template-columns:repeat(3,1fr)}}
+/*FINPLANCSS*/
 footer{text-align:center;color:var(--doux);font-size:13px;padding:24px 16px}
 </style></head><body>
 <header><h1 onclick="location.hash=''">🏫 Le coin des élèves</h1><p>Mes plans de travail, mes ateliers, mes écoutes et mes entraînements</p>
@@ -69,6 +94,7 @@ function rendu(){
  document.querySelectorAll('#niveaux button').forEach(b=>b.classList.toggle('on',b.dataset.n===niveau));
  const id=location.hash.slice(1);
  $('#nav').innerHTML=MATIERES.map(m=>`<a href="#${m.id}" style="--c:${m.c}" class="${m.id===id?'on':''}">${m.ic} ${m.nom}</a>`).join('');
+ if(id.startsWith('plan/')){planPage(id.slice(5));return}
  const m=MATIERES.find(x=>x.id===id);
  if(!m){ $('#main').innerHTML='<div class="accueil">'+MATIERES.map(m=>{const n=CATALOGUE.filter(i=>i.matiere===m.id&&garde(i)).length;
    return `<a class="grosse" href="#${m.id}" style="--c:${m.c}"><span>${m.ic}</span><b>${m.nom}</b><small>${m.id==='entrainer'?m.txt:(n?n+' ressources · '+m.txt:m.txt)}</small></a>`}).join('')+'</div>'; return;}
@@ -82,7 +108,7 @@ function rendu(){
   const g={};f.forEach(i=>(g[i.rubrique]=g[i.rubrique]||[]).push(i));
   $('#liste').innerHTML=Object.entries(g).map(([r,l])=>`<details ${q||Object.keys(g).length<3?'open':''}><summary>${esc(r)} <small>(${l.length})</small></summary><ul class="res">`+
    l.map(i=>`<li>${i.code?`<span class="code">${esc(i.code)}</span>`:''}<span class="niv ${i.niveau}">${i.niveau}</span><span class="t">${esc(i.titre)}${i.type?' · <small>'+esc(i.type)+'</small>':''}</span>`+
-   (i.f?`<a class="btn" href="#" data-f="${i.f}">${i.ecoute?'🎧 Écouter':'📄 Ouvrir'}</a>`:i.lien?`<a class="btn" href="${i.lien}">🎧 Écouter</a>`:`<a class="btn" href="${encodeURI(i.pdf)}" target="_blank" rel="noopener">📄 Ouvrir</a>`)+'</li>').join('')+'</ul></details>').join('')};
+   (i.plan||i.pf?`<a class="btn" href="#plan/${i.code}">🎮 Je m'entraîne</a>`:'')+(i.f?`<a class="btn" href="#" data-f="${i.f}">${i.ecoute?'🎧 Écouter':'📄 '+(i.plan||i.pf?'Imprimer':'Ouvrir')}</a>`:i.lien?`<a class="btn" href="${i.lien}">🎧 Écouter</a>`:`<a class="btn" href="${encodeURI(i.pdf)}" target="_blank" rel="noopener">📄 Ouvrir</a>`)+'</li>').join('')+'</ul></details>').join('')};
  $('#q').oninput=liste;liste();}
 /* ===== Je m'entraîne : calcul mental qui se corrige seul ===== */
 const r=(a,b)=>Math.floor(Math.random()*(b-a+1))+a;
@@ -109,6 +135,63 @@ function suivant(){$('#prog').style.width=(n*100/TOTAL)+'%';if(n>=TOTAL){$('#cal
 function verif(){if(n>=TOTAL)return;const v=parseFloat($('#rep').value.replace(',','.').replace(/\s/g,''));if(isNaN(v))return;
  if(Math.abs(v-rep)<1e-9){bon++;$('#retour').innerHTML='<span class="ok">✔ Juste !</span>'}else{$('#retour').innerHTML='<span class="ko">✘ C\'était '+rep.toLocaleString('fr-FR')+'</span>'}
  n++;$('#score').textContent='Calcul '+n+' / '+TOTAL+' · '+bon+' juste(s)';suivant()}
+/*PLANJS*/
+/* ===== Plans de travail interactifs ===== */
+window.PLANS=window.PLANS||{};
+const nrm2=t=>t.replace(/[  ]/g,' ').replace(/[’‘`]/g,"'").replace(/\.\.\./g,'…').replace(/\s+/g,' ').trim().replace(/ ([?!:;»])/g,'$1').replace(/« /g,'«');
+function fmt(t){return esc(t).replace(/\*\*(.+?)\*\*/g,'<b>$1</b>')}
+function melange(a){a=a.slice();for(let i=a.length-1;i>0;i--){const j=Math.floor(Math.random()*(i+1));[a[i],a[j]]=[a[j],a[i]]}return a}
+async function chargePlan(code){if(PLANS[code])return PLANS[code];
+ const it=CATALOGUE.find(x=>x.code===code&&(x.plan||x.pf));if(!it)return null;
+ if(it.pf){PLANS[code]=JSON.parse(new TextDecoder().decode(await dechiffre('f/'+it.pf+'.bin')));return PLANS[code]}
+ await new Promise((ok,ko)=>{const sc=document.createElement('script');sc.src=it.plan;sc.onload=ok;sc.onerror=ko;document.head.appendChild(sc)});return PLANS[code]}
+let FAIT={};
+async function planPage(code){
+ const mat=MATIERES.find(m=>CATALOGUE.some(i=>i.code===code&&i.matiere===m.id))||MATIERES[0];
+ $('#main').innerHTML='<p class="vide">Chargement…</p>';
+ let P;try{P=await chargePlan(code)}catch(e){P=null}
+ if(!P){$('#main').innerHTML='<p class="vide">Ce plan de travail interactif n\'est pas encore disponible.</p>';return}
+ const par={};P.ateliers.forEach(a=>(par[a.niveau]=par[a.niveau]||[]).push(a));
+ $('#main').innerHTML=`<div style="--c:${mat.c}"><a class="retour" href="#${mat.id}">← Retour à ${mat.nom}</a>
+  <h2 class="titre">${mat.ic} ${esc(P.titre)} <small style="color:#999;font-size:14px">${code}</small></h2>
+  <div class="bloc lecon"><h3>📘 La leçon</h3>${P.lecon.map(p=>'<p>'+fmt(p)+'</p>').join('')}</div>
+  ${Object.keys(par).sort().map(n=>`<h3 class="niv-t">Niveau ${n} · ${esc(P.niveaux[n-1]||'')}</h3>`+par[n].map(a=>`<button class="atel" data-c="${a.code}"><span class="num">${a.code}</span><span class="tt">${esc(a.title)}<small>${a.cards?a.cards.length+' questions':a.pairs.length+' paires'}</small></span><span class="fait" id="f${a.code.replace('.','_')}">${FAIT[code+a.code]||'▶'}</span></button>`).join('')).join('')}
+  <div id="jeu"></div></div>`;
+ document.querySelectorAll('.atel').forEach(b=>b.onclick=()=>{jouer(P,P.ateliers.find(a=>a.code===b.dataset.c),mat);$('#jeu').scrollIntoView({behavior:'smooth'})})}
+function jouer(P,a,mat){
+ const J=$('#jeu');
+ J.innerHTML=`<div class="jeu" style="--c:${mat.c}"><h3 style="margin:0;color:${mat.c}">${a.code} · ${esc(a.title)}</h3><div class="zone"></div></div>`;
+ const Z=J.querySelector('.zone');
+ const fin=(bon,tot)=>{FAIT[P.code+a.code]=bon===tot?'⭐':'✔';const e=document.getElementById('f'+a.code.replace('.','_'));if(e)e.textContent=FAIT[P.code+a.code];
+  Z.innerHTML=`<p class="carte">${bon===tot?'Bravo, tout est juste ! 🎉':'Atelier terminé : '+bon+' / '+tot}</p><button class="btn2 plein" id="rej">↻ Recommencer</button>`;$('#rej').onclick=()=>jouer(P,a,mat)};
+ if(a.type==='memory'){memory(Z,a,fin);return}
+ const cartes=melange(a.type==='domino'?a.pairs.map(p=>({q:p[0],ans:p[1],pool:a.pairs.map(x=>x[1])})):a.cards);let k=0,bon=0;
+ const suivante=()=>{if(k>=cartes.length){fin(bon,cartes.length);return}
+  const c=cartes[k];const tete=`<p style="color:#888;margin:8px 0">Question ${k+1} / ${cartes.length}</p>`;
+  const apres=(ok,msg)=>{if(ok)bon++;k++;Z.insertAdjacentHTML('beforeend',`<div class="retourj ${ok?'ok':'ko'}">${msg}</div><button class="btn2 plein" id="sv">${k>=cartes.length?'Terminer':'Suivante →'}</button>`);$('#sv').onclick=suivante;$('#sv').focus()};
+  if(a.type==='pince'||a.type==='domino'||a.type==='vf'){
+   const ch=a.type==='pince'?c.ch:a.type==='vf'?['Vrai','Faux']:melange([c.ans].concat(melange(c.pool.filter(x=>x!==c.ans)).slice(0,3)));
+   const bonne=a.type==='pince'?c.ch[c.ans]:a.type==='vf'?(c.v?'Vrai':'Faux'):c.ans;const q=a.type==='vf'?c.s:c.q;
+   Z.innerHTML=tete+`<div class="carte">${esc(q).replace(/\n/g,'<br>')}</div><div class="rep">${ch.map((x,i)=>`<button data-i="${i}">${esc(x)}</button>`).join('')}</div>`;
+   Z.querySelectorAll('.rep button').forEach(b=>b.onclick=()=>{const ok=ch[b.dataset.i]===bonne;Z.querySelectorAll('.rep button').forEach(x=>{x.disabled=true;if(ch[x.dataset.i]===bonne)x.classList.add('bon')});if(!ok)b.classList.add('mauvais');
+    apres(ok,ok?'✔ Juste ! '+esc(c.expl||''):'✘ La bonne réponse : <b>'+esc(bonne)+'</b>. '+esc(c.expl||''))})}
+  else{
+   const inv=a.type==='erreur'?`<p>${esc(c.who)} a écrit :</p>`:'';
+   Z.innerHTML=tete+inv+`<div class="carte">${esc(c.q).replace(/\n/g,'<br>')}</div><p style="margin:4px 0">${a.type==='erreur'?'Écris la bonne phrase :':'Écris ta réponse :'}</p><textarea class="saisie" rows="2" id="sa" autocomplete="off" autocapitalize="off" spellcheck="false"></textarea><br><button class="btn2 plein" id="vr" style="margin-top:8px">Je vérifie</button>`;
+   $('#sa').focus();$('#vr').onclick=()=>{const v=$('#sa').value;if(!v.trim())return;$('#vr').remove();$('#sa').disabled=true;
+    if(nrm2(v)===nrm2(c.ans)){apres(true,'✔ Juste ! '+esc(c.expl||''))}
+    else{Z.insertAdjacentHTML('beforeend',`<div class="retourj compare">Ta réponse : <b>${esc(v)}</b><br>La bonne réponse : <b>${esc(c.ans).replace(/\n/g,'<br>')}</b><br>${esc(c.expl||'')}<br><br>Alors, ta réponse était-elle juste ?<br><button class="btn2" id="oui">Oui, j'avais juste</button> <button class="btn2" id="non">Non, je me suis trompé(e)</button></div>`);
+     const clos=ok=>{if(ok)bon++;k++;Z.querySelector('.compare').remove();Z.insertAdjacentHTML('beforeend',`<div class="retourj ${ok?'ok':'ko'}">${ok?'✔ D\'accord, bien joué !':'✘ Ce n\'est pas grave, on apprend.'}</div><button class="btn2 plein" id="sv">${k>=cartes.length?'Terminer':'Suivante →'}</button>`);$('#sv').onclick=suivante;$('#sv').focus()};
+     $('#oui').onclick=()=>clos(true);$('#non').onclick=()=>clos(false)}}}};
+ suivante()}
+function memory(Z,a,fin){let sel=[],trouve=0,coups=0;
+ const ca=melange(a.pairs.flatMap((p,i)=>[{t:p[0],i},{t:p[1],i}]));
+ Z.innerHTML=`<p>Retourne deux cartes et retrouve les paires.</p><div class="grille">${ca.map((c,j)=>`<button class="mem" data-j="${j}">${esc(c.t)}</button>`).join('')}</div><p id="cp" style="color:#888"></p>`;
+ const bs=Z.querySelectorAll('.mem');bs.forEach(b=>b.onclick=()=>{const j=+b.dataset.j;if(sel.length>=2||b.classList.contains('vue')||b.classList.contains('trouvee'))return;b.classList.add('vue');sel.push(j);
+  if(sel.length===2){coups++;$('#cp').textContent=coups+' essai(s)';const[x,y]=sel;
+   if(ca[x].i===ca[y].i){[x,y].forEach(n=>{bs[n].classList.remove('vue');bs[n].classList.add('trouvee')});sel=[];if(++trouve===a.pairs.length)setTimeout(()=>fin(coups<=a.pairs.length+3?1:0,1),500)}
+   else setTimeout(()=>{[x,y].forEach(n=>bs[n].classList.remove('vue'));sel=[]},900)}})}
+/*FINPLANJS*/
 /* ===== Accès protégé : le catalogue et les fichiers sont chiffrés (AES-GCM, clé tirée du mot de passe) ===== */
 let CLE=null;
 const b64=a=>btoa(String.fromCharCode(...new Uint8Array(a))),d64=s=>Uint8Array.from(atob(s),c=>c.charCodeAt(0));
