@@ -95,6 +95,7 @@ function rendu(){
  const id=location.hash.slice(1);
  $('#nav').innerHTML=MATIERES.map(m=>`<a href="#${m.id}" style="--c:${m.c}" class="${m.id===id?'on':''}">${m.ic} ${m.nom}</a>`).join('');
  if(id.startsWith('plan/')){planPage(id.slice(5));return}
+ if(id.startsWith('ecoute/')){ecoutePage(id.slice(7));return}
  const m=MATIERES.find(x=>x.id===id);
  if(!m){ $('#main').innerHTML='<div class="accueil">'+MATIERES.map(m=>{const n=CATALOGUE.filter(i=>i.matiere===m.id&&garde(i)).length;
    return `<a class="grosse" href="#${m.id}" style="--c:${m.c}"><span>${m.ic}</span><b>${m.nom}</b><small>${m.id==='entrainer'?m.txt:(n?n+' ressources · '+m.txt:m.txt)}</small></a>`}).join('')+'</div>'; return;}
@@ -108,7 +109,7 @@ function rendu(){
   const g={};f.forEach(i=>(g[i.rubrique]=g[i.rubrique]||[]).push(i));
   $('#liste').innerHTML=Object.entries(g).map(([r,l])=>`<details ${q||Object.keys(g).length<3?'open':''}><summary>${esc(r)} <small>(${l.length})</small></summary><ul class="res">`+
    l.map(i=>`<li>${i.code?`<span class="code">${esc(i.code)}</span>`:''}<span class="niv ${i.niveau}">${i.niveau}</span><span class="t">${esc(i.titre)}${i.type?' · <small>'+esc(i.type)+'</small>':''}</span>`+
-   (i.plan||i.pf?`<a class="btn" href="#plan/${i.code}">🎮 Je m'entraîne</a>`:'')+(i.f?`<a class="btn" href="#" data-f="${i.f}">${i.ecoute?'🎧 Écouter':'📄 '+(i.plan||i.pf?'Imprimer':'Ouvrir')}</a>`:i.lien?`<a class="btn" href="${i.lien}">🎧 Écouter</a>`:i.pdf?`<a class="btn" href="${encodeURI(i.pdf)}" target="_blank" rel="noopener">📄 Ouvrir</a>`:'')+'</li>').join('')+'</ul></details>').join('')};
+   (i.plan||i.pf?`<a class="btn" href="#plan/${i.code}">🎮 Je m'entraîne</a>`:'')+(i.page?`<a class="btn" href="#ecoute/${i.page}">🎧 Écouter et jouer</a>`:i.f?`<a class="btn" href="#" data-f="${i.f}">${i.ecoute?'🎧 Écouter':'📄 '+(i.plan||i.pf?'Imprimer':'Ouvrir')}</a>`:i.lien?`<a class="btn" href="${i.lien}">🎧 Écouter</a>`:i.pdf?`<a class="btn" href="${encodeURI(i.pdf)}" target="_blank" rel="noopener">📄 Ouvrir</a>`:'')+'</li>').join('')+'</ul></details>').join('')};
  $('#q').oninput=liste;liste();}
 /* ===== Je m'entraîne : calcul mental qui se corrige seul ===== */
 const r=(a,b)=>Math.floor(Math.random()*(b-a+1))+a;
@@ -146,6 +147,12 @@ async function chargePlan(code){if(PLANS[code])return PLANS[code];
  if(it.pf){PLANS[code]=JSON.parse(new TextDecoder().decode(await dechiffre('f/'+it.pf+'.bin')));return PLANS[code]}
  await new Promise((ok,ko)=>{const sc=document.createElement('script');sc.src=it.plan;sc.onload=ok;sc.onerror=ko;document.head.appendChild(sc)});return PLANS[code]}
 let FAIT={};
+/* ===== Page d'écoute ouverte par QR code : #ecoute/<page> ===== */
+async function ecoutePage(nom){const i=CATALOGUE.find(x=>x.page===nom);
+ if(!i){$('#main').innerHTML='<p class="vide">Cette page d\'écoute n\'est pas encore disponible.</p>';return}
+ $('#main').innerHTML='<p class="vide">Chargement…</p>';let src=i.lien;
+ try{if(i.f)src=URL.createObjectURL(new Blob([await dechiffre('f/'+i.f+'.bin')],{type:'text/html'}))}catch(e){$('#main').innerHTML='<p class="vide">Impossible d\'ouvrir cette page.</p>';return}
+ $('#main').innerHTML=`<a class="retour" href="#anglais">← Retour à Anglais</a><iframe src="${src}" title="${esc(i.titre)}" style="width:100%;height:calc(100vh - 150px);min-height:600px;border:0;border-radius:14px;background:#fff;margin-top:8px"></iframe>`}
 async function planPage(code){
  const mat=MATIERES.find(m=>CATALOGUE.some(i=>i.code===code&&i.matiere===m.id))||MATIERES[0];
  $('#main').innerHTML='<p class="vide">Chargement…</p>';
